@@ -1,0 +1,106 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.11'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+group = 'com.sjw'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+
+	jacoco {
+		destinationFile = file("$buildDir/jacoco/jacoco.exec")
+	}
+
+	useJUnitPlatform()
+	finalizedBy 'jacocoTestReport'
+}
+
+jacoco {
+	// JaCoCo 버전
+	toolVersion = '0.8.5'
+
+//  테스트결과 리포트를 저장할 경로 변경
+//  default는 "$/jacoco"
+//  reportsDir = file("$buildDir/customJacocoReportDir")
+}
+
+jacocoTestReport {
+	reports {
+		// 원하는 리포트를 켜고 끌 수 있습니다.
+		html.enabled true
+		xml.enabled false
+		csv.enabled false
+
+//  각 리포트 타입 마다 리포트 저장 경로를 설정할 수 있습니다.
+		xml.destination file("${buildDir}/jacoco/index.xml")
+		csv.destination file("${buildDir}/jacoco/index.csv")
+		html.destination file("${buildDir}/jacoco/index.html")
+	}
+
+	finalizedBy 'jacocoTestCoverageVerification'
+
+
+//	afterEvaluate {
+//		classDirectories.setFrom(
+//				files(classDirectories.files.collect {
+//					fileTree(dir: it, excludes: [
+//							'**/*Application*',
+//							'**/*Exception*',
+//							'**/dto/**',
+//
+//					])
+//				})
+//		) // task에서는 보고서에 표시되는 클래스 중 일부를 제외할 수 있습니다.
+//	}
+
+
+}
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			element = 'CLASS'
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.75
+			}
+
+			rule {
+				// 규칙을 여러개 추가할 수 있습니다.
+
+//				excludes = [
+//						'*.*Application',
+//						'*.*Exception',
+//						'*.dto.*',
+
+//						// 코드 커버리지를 만족하는지 확인할 대상중 일부를 제외할 수 있습니다.
+//						jacocoTestReport 에서 작성한 것과 다르게 파일의 경로가 아닌 패키지 + 클래스명을 적어주어야 합니다.
+//						와일드 카드로 * (여러 글자) 와 ? (한 글자) 를 사용할 수 있습니다.
+//				]
+			}
+		}
+	}
+}
