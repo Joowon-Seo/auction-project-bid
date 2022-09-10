@@ -44,7 +44,7 @@ public class User {
 	private UserLevel user_level;
 
 	@Enumerated(EnumType.STRING)
-	private userStatus user_status;
+	private UserStatus user_status;
 
 	private LocalDateTime created_date;
 

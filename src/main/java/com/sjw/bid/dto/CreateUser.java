@@ -1,17 +1,23 @@
-package com.sjw.bid.controller.dto;
+package com.sjw.bid.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 public class UserDto {
 
+	@Setter
 	@Getter
+	@AllArgsConstructor
 	@NoArgsConstructor
-	public static class createUser {
+	@Builder
+	public static class CreateRequest {
 
 		@NotBlank(message = "이름을 입력해주세요.")
 		private String name;
@@ -30,4 +36,9 @@ public class UserDto {
 		@NotBlank(message = "주소를 입력해 주세요")
 		private String address;
 	}
+
+	public
+
+
+
 }
