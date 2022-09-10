@@ -1,5 +1,5 @@
 package com.sjw.bid.domain.user;
 
-public enum userStatus {
+public enum UserStatus {
 	NORMAL, BAN
 }
