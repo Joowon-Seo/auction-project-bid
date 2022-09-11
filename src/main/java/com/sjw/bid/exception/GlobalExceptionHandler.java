@@ -1,10 +1,9 @@
-package com.sjw.bid.controller;
+package com.sjw.bid.exception;
 
 import static com.sjw.bid.type.ErrorCode.INVALID_REQUEST;
 import static com.sjw.bid.type.ErrorCode.INVALID_SERVER_ERROR;
 
 import com.sjw.bid.dto.ErrorResponse;
-import com.sjw.bid.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
