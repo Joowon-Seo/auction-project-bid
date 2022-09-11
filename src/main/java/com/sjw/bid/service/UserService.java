@@ -9,6 +9,7 @@ import com.sjw.bid.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,13 +19,14 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	public UserDto createUser(CreateUser.Request request) {
+		String passwordEncryption = passwordEncryption(request.getPassword());
 		return UserDto.fromEntity(
 			userRepository.save(User.builder()
 				.name(request.getName())
 				.email(request.getEmail())
 				.address(request.getAddress())
 				.phone(request.getPhone())
-				.password(request.getPassword())
+				.password(passwordEncryption)
 				.account(request.getAccount())
 				.user_level(UserLevel.UNAUTH)
 				.user_status(UserStatus.NORMAL)
@@ -32,6 +34,10 @@ public class UserService {
 				.modified_date(LocalDateTime.now())
 				.build())
 		);
+	}
+
+	private String passwordEncryption(String password){
+		return BCrypt.hashpw(password, BCrypt.gensalt());
 	}
 
 }
