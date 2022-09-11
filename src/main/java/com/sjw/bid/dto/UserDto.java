@@ -1,8 +1,8 @@
 package com.sjw.bid.dto;
 
 import com.sjw.bid.domain.user.User;
-import com.sjw.bid.domain.user.UserLevel;
-import com.sjw.bid.domain.user.UserStatus;
+import com.sjw.bid.type.UserLevel;
+import com.sjw.bid.type.UserStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
