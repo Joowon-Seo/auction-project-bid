@@ -1,7 +1,7 @@
 package com.sjw.bid.dto;
 
-import com.sjw.bid.domain.user.UserLevel;
-import com.sjw.bid.domain.user.UserStatus;
+import com.sjw.bid.type.UserLevel;
+import com.sjw.bid.type.UserStatus;
 import java.time.LocalDateTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
