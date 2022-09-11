@@ -1,5 +1,7 @@
 package com.sjw.bid.domain.user;
 
+import com.sjw.bid.type.UserLevel;
+import com.sjw.bid.type.UserStatus;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,4 +1,4 @@
-package com.sjw.bid.domain.user;
+package com.sjw.bid.type;
 
 public enum UserLevel {
 	UNAUTH, AUTH, ADMIN
