@@ -11,22 +11,26 @@ import com.sjw.bid.type.UserLevel;
 import com.sjw.bid.type.UserStatus;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
 	public UserDto createUser(CreateUser.Request request) {
 
 		verificationEmailDuplication(request.getEmail());
 
-		String passwordEncryption = passwordEncryption(request.getPassword());
+		String passwordEncoded =
+			"{bcrypt}" + passwordEncoder.encode(request.getPassword());
 
 		return UserDto.fromEntity(
 			userRepository.save(User.builder()
@@ -34,7 +38,7 @@ public class UserService {
 				.email(request.getEmail())
 				.address(request.getAddress())
 				.phone(request.getPhone())
-				.password(passwordEncryption)
+				.password(passwordEncoded)
 				.account(request.getAccount())
 				.user_level(UserLevel.UNAUTH)
 				.user_status(UserStatus.NORMAL)
@@ -44,9 +48,6 @@ public class UserService {
 		);
 	}
 
-	private String passwordEncryption(String password) {
-		return BCrypt.hashpw(password, BCrypt.gensalt());
-	}
 
 	private void verificationEmailDuplication(String email) {
 		if (userRepository.existsByEmail(email)) {

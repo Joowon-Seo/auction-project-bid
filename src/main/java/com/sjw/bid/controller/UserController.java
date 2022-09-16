@@ -22,4 +22,5 @@ public class UserController {
 			userService.createUser(request)
 		);
 	}
+
 }
