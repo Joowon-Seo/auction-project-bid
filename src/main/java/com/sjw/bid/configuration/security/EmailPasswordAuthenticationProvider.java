@@ -1,9 +1,14 @@
 package com.sjw.bid.configuration.security;
 
+import com.sjw.bid.domain.user.User;
+import com.sjw.bid.exception.UserAuthenticationException;
+import com.sjw.bid.type.UserLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -29,9 +34,14 @@ public class EmailPasswordAuthenticationProvider implements
 		if (!this.passwordEncoder.matches(
 			authentication.getCredentials().toString(),
 			userDetails.getPassword())) {
-			throw new BadCredentialsException(
-				"AbstractUserDetailsAuthenticationProvider.badCredentials");
+			throw new BadCredentialsException(userId);
 		}
+
+		log.info("비번 통과");
+
+//		if (UserLevel.UNAUTH.equals(userDetails.getAuthorities())) {
+//			throw new InternalAuthenticationServiceException("USER_HAS_NOT_AUTHENTICATED_THE_EMAIL");
+//		}
 
 		EmailPasswordAuthenticationToken certifiedToken = new EmailPasswordAuthenticationToken(
 			userDetails.getUsername(),

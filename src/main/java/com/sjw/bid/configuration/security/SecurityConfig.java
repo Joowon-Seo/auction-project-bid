@@ -1,9 +1,8 @@
 package com.sjw.bid.configuration.security;
 
-import com.sjw.bid.configuration.security.EmailPasswordAuthenticationProvider;
-import com.sjw.bid.configuration.security.JsonEmailPasswordAuthenticationFilter;
 import com.sjw.bid.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -27,9 +28,16 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final RequestMatcher LOGIN_REQUEST_MATCHER = new AntPathRequestMatcher(
-		"/user/login", "POST");
+		"/login", "POST");
 	private final UserDetailsService userDetailsService;
 	private final UserDetailsServiceImpl userDetailsServiceImpl;
+	@Qualifier("userAuthenticationEntryPoint")
+	private final AuthenticationEntryPoint authenticationEntryPoint;
+
+	@Bean
+	public AuthenticationFailureHandler authenticationFailureHandler() {
+		return new LoginFailHandler();
+	}
 
 	private static final String[] AUTH_WHITELIST = {
 		// -- swagger ui
@@ -88,6 +96,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.permitAll()
 			.antMatchers("/admin").hasRole("ADMIN");
 //			.anyRequest().authenticated();
+
+		http
+			.formLogin()
+			.loginPage("/login")
+			.permitAll()
+			.failureHandler(authenticationFailureHandler());
+
+		http
+			.exceptionHandling()
+			.authenticationEntryPoint(authenticationEntryPoint);
 
 		super.configure(http);
 	}
