@@ -1,14 +1,9 @@
 package com.sjw.bid.configuration.security;
 
-import com.sjw.bid.domain.user.User;
-import com.sjw.bid.exception.UserAuthenticationException;
-import com.sjw.bid.type.UserLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;

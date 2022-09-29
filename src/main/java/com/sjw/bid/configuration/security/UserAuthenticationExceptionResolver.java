@@ -1,6 +1,5 @@
 package com.sjw.bid.configuration.security;
 
-import com.sjw.bid.type.ErrorCode;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerExceptionResolver;
