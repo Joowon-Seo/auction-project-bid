@@ -1,15 +1,22 @@
 package com.sjw.bid.service;
 
+import static com.sjw.bid.type.ErrorCode.INVALID_EMAIL_OR_PASSWORD;
+import static com.sjw.bid.type.ErrorCode.STOPPED_USER;
 import static com.sjw.bid.type.ErrorCode.THIS_EMAIL_ALREADY_EXISTS;
+import static com.sjw.bid.type.ErrorCode.USER_DOES_NOT_EXIST;
+import static com.sjw.bid.type.ErrorCode.USER_HAS_NOT_AUTHENTICATED_THE_EMAIL;
 
 import com.sjw.bid.domain.user.User;
 import com.sjw.bid.dto.CreateUser;
+import com.sjw.bid.dto.Login;
 import com.sjw.bid.dto.UserDto;
+import com.sjw.bid.exception.UserAuthenticationException;
 import com.sjw.bid.exception.UserException;
 import com.sjw.bid.repository.UserRepository;
 import com.sjw.bid.type.UserLevel;
 import com.sjw.bid.type.UserStatus;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,6 +60,49 @@ public class UserService {
 		if (userRepository.existsByEmail(email)) {
 			throw new UserException(THIS_EMAIL_ALREADY_EXISTS);
 		}
+	}
+
+	public UserDto login(Login.Request request) {
+
+		Optional<User> userOptional = userRepository.findByEmail(
+			request.getEmail());
+
+		if (userOptional.isEmpty()) {
+			throw new UserAuthenticationException(USER_DOES_NOT_EXIST);
+		}
+
+		User user = userOptional.get();
+
+		log.info(user.getPassword().substring(0, 8));
+
+		if (!passwordEncoder.matches(request.getPassword(),
+			user.getPassword().substring(8))) {
+			throw new UserAuthenticationException(INVALID_EMAIL_OR_PASSWORD);
+		}
+
+		if (UserLevel.UNAUTH.equals(user.getUser_level())) {
+			throw new UserAuthenticationException(
+				USER_HAS_NOT_AUTHENTICATED_THE_EMAIL);
+		}
+
+		if (UserStatus.BAN.equals(user.getUser_status())) {
+			throw new UserAuthenticationException(STOPPED_USER);
+		}
+
+		return UserDto.builder()
+			.id(user.getId())
+			.id(user.getId())
+			.email(user.getEmail())
+			.name(user.getName())
+			.address(user.getAddress())
+			.phone(user.getPhone())
+			.password(user.getPassword())
+			.account(user.getAccount())
+			.user_level(user.getUser_level())
+			.user_status(user.getUser_status())
+			.created_date(user.getCreated_date())
+			.modified_date(user.getModified_date())
+			.build();
 	}
 
 

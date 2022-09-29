@@ -29,9 +29,14 @@ public class EmailPasswordAuthenticationProvider implements
 		if (!this.passwordEncoder.matches(
 			authentication.getCredentials().toString(),
 			userDetails.getPassword())) {
-			throw new BadCredentialsException(
-				"AbstractUserDetailsAuthenticationProvider.badCredentials");
+			throw new BadCredentialsException(userId);
 		}
+
+		log.info("비번 통과");
+
+//		if (UserLevel.UNAUTH.equals(userDetails.getAuthorities())) {
+//			throw new InternalAuthenticationServiceException("USER_HAS_NOT_AUTHENTICATED_THE_EMAIL");
+//		}
 
 		EmailPasswordAuthenticationToken certifiedToken = new EmailPasswordAuthenticationToken(
 			userDetails.getUsername(),

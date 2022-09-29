@@ -1,6 +1,5 @@
 package com.sjw.bid.configuration.security;
 
-import com.sjw.bid.configuration.security.EmailPasswordAuthenticationToken;
 import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
