@@ -2,6 +2,7 @@ package com.sjw.bid.controller;
 
 import com.sjw.bid.dto.CreateUser;
 import com.sjw.bid.dto.Login;
+import com.sjw.bid.dto.ModifyPassword;
 import com.sjw.bid.service.UserService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,15 @@ public class UserController {
 	) {
 		return ResponseEntity.ok(Login.Response.from(
 			userService.login(request)
+		));
+	}
+
+	@PostMapping("/modifyPassword")
+	public ResponseEntity<?> modifyPassword(
+		@RequestBody @Valid ModifyPassword.Request request
+	) {
+		return ResponseEntity.ok(ModifyPassword.Response.from(
+			userService.modifyPassword(request)
 		));
 	}
 }
