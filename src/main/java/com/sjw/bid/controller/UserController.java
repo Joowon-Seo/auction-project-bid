@@ -2,6 +2,7 @@ package com.sjw.bid.controller;
 
 import com.sjw.bid.dto.CreateUser;
 import com.sjw.bid.dto.Login;
+import com.sjw.bid.dto.ModifyAddress;
 import com.sjw.bid.dto.ModifyPassword;
 import com.sjw.bid.service.UserService;
 import javax.validation.Valid;
@@ -43,6 +44,15 @@ public class UserController {
 	) {
 		return ResponseEntity.ok(ModifyPassword.Response.from(
 			userService.modifyPassword(request)
+		));
+	}
+
+	@PostMapping("/modifyAddress")
+	public ResponseEntity<?> modifyAddress(
+		@RequestBody @Valid ModifyAddress.Request request
+	) {
+		return ResponseEntity.ok(ModifyAddress.Response.from(
+			userService.modifyAddress(request)
 		));
 	}
 }

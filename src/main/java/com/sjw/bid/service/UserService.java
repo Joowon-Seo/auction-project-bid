@@ -9,6 +9,7 @@ import static com.sjw.bid.type.ErrorCode.USER_HAS_NOT_AUTHENTICATED_THE_EMAIL;
 import com.sjw.bid.domain.user.User;
 import com.sjw.bid.dto.CreateUser;
 import com.sjw.bid.dto.Login;
+import com.sjw.bid.dto.ModifyAddress;
 import com.sjw.bid.dto.ModifyPassword;
 import com.sjw.bid.dto.UserDto;
 import com.sjw.bid.exception.UserAuthenticationException;
@@ -118,6 +119,24 @@ public class UserService {
 			"{bcrypt}" + passwordEncoder.encode(request.getChangePassword());
 
 		user.setPassword(newPassword);
+		user.setModified_date(LocalDateTime.now());
+
+		return UserDto.fromEntity(
+			userRepository.save(user));
+	}
+
+	public UserDto modifyAddress(ModifyAddress.Request request) {
+
+		verifyEmailPresence(request.getEmail());
+		verifyPassword(request.getEmail(), request.getPassword());
+
+		Optional<User> userOptional = userRepository.findByEmail(
+			request.getEmail());
+		User user = userOptional.get();
+
+		String newAddress = request.getNewAddress();
+
+		user.setAddress(newAddress);
 		user.setModified_date(LocalDateTime.now());
 
 		return UserDto.fromEntity(
