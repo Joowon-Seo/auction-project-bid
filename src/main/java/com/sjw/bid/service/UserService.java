@@ -38,8 +38,7 @@ public class UserService {
 
 		verificationEmailDuplication(request.getEmail());
 
-		String passwordEncoded =
-			"{bcrypt}" + passwordEncoder.encode(request.getPassword());
+		String passwordEncoded = encryptPassword(request.getPassword());
 
 		return UserDto.fromEntity(
 			userRepository.save(User.builder()
@@ -108,15 +107,10 @@ public class UserService {
 
 	public UserDto modifyPassword(ModifyPassword.Request request) {
 
-		verifyEmailPresence(request.getEmail());
-		verifyPassword(request.getEmail(), request.getPassword());
-
-		Optional<User> userOptional = userRepository.findByEmail(
-			request.getEmail());
-		User user = userOptional.get();
-
-		String newPassword =
-			"{bcrypt}" + passwordEncoder.encode(request.getChangePassword());
+		User user = userRepository.findByEmail(request.getEmail())
+			.orElseThrow(() -> new UserException(USER_DOES_NOT_EXIST));
+		verifyPassword(user, request.getPassword());
+		String newPassword = encryptPassword(request.getChangePassword());
 
 		user.setPassword(newPassword);
 		user.setModified_date(LocalDateTime.now());
@@ -127,12 +121,9 @@ public class UserService {
 
 	public UserDto modifyAddress(ModifyAddress.Request request) {
 
-		verifyEmailPresence(request.getEmail());
-		verifyPassword(request.getEmail(), request.getPassword());
-
-		Optional<User> userOptional = userRepository.findByEmail(
-			request.getEmail());
-		User user = userOptional.get();
+		User user = userRepository.findByEmail(request.getEmail())
+			.orElseThrow(() -> new UserException(USER_DOES_NOT_EXIST));
+		verifyPassword(user, request.getPassword());
 
 		String newAddress = request.getNewAddress();
 
@@ -143,22 +134,17 @@ public class UserService {
 			userRepository.save(user));
 	}
 
-	private void verifyEmailPresence(String email) {
-		boolean exist = userRepository.existsByEmail(email);
-		if (!exist) {
-			throw new UserException(USER_DOES_NOT_EXIST);
-		}
-	}
-
-	private void verifyPassword(String email, String password) {
-		Optional<User> userOptional = userRepository.findByEmail(email);
-
-		User user = userOptional.get();
+	private void verifyPassword(User user, String password) {
 
 		if (!passwordEncoder.matches(password,
 			user.getPassword().substring(8))) {
 			throw new UserException(INVALID_EMAIL_OR_PASSWORD);
 		}
+	}
+
+	private String encryptPassword(String password) {
+
+		return "{bcrypt}" + passwordEncoder.encode(password);
 	}
 
 
